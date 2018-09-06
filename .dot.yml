@@ -3,4 +3,5 @@ role:
   dir:
     - bin
   link:
+    - .exports
     - "bin/*:bin"
