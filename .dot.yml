@@ -1,0 +1,6 @@
+---
+role:
+  dir:
+    - bin
+  link:
+    - "bin/*:bin"

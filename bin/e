@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Usage: e [<path>]
+# Quick shortcut to the program specified by VISUAL or EDITOR
+# e: opens the current directory in your editor
+# e <path>: opens the specified directory in your editor
+
+e="${VISUAL:-$EDITOR}"
+
+if [ -z "$e" ]; then
+  printf >&2 '%s\n' "EDITOR is empty or not set"
+  exit 1
+fi
+
+if [ $# -ne 0 ]; then
+  $e "$@"
+else
+  $e .
+fi
