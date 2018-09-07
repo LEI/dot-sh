@@ -3,5 +3,5 @@ role:
   dir:
     - bin
   link:
-    - .* # exports, hushlogin
+    - .* # curlrc, exports, hushlogin
     - "bin/*:bin"
