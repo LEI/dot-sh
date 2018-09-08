@@ -1,0 +1,46 @@
+#!/bin/sh
+
+# More verbose
+alias cp="cp -v"
+alias ln="ln -v"
+alias mv="mv -v"
+alias rm="rm -v" # -i?
+
+# alias df="df -ah" # -T --total # pydf
+# alias du="du -ach | sort -h" # ncdu
+
+# More colors
+alias grep="grep --color=auto"
+alias fgrep="fgrep --color=auto"
+alias egrep="egrep --color=auto"
+
+# Always continue getting partially-downloaded file
+alias wget="wget -c"
+
+# Misc shortcuts
+alias h="history"
+alias hgrep="history | grep"
+alias j="jobs"
+alias l="ls -lF"
+alias la="ls -lAF"
+alias map="xargs -n1"
+alias path='echo $PATH | tr -s ":" "\n"'
+#alias rd="rmdir"
+#alias urlencode="python -c 'import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);'"
+#alias ..="cd .."
+#alias ...="cd ../.."
+#alias ....="cd ../../.."
+#alias .....="cd ../../../.."
+#alias -- -="cd -"
+
+# Remote commands
+
+# ipinfo.io: ip, hostname, city, region, country, loc, postal, org
+#alias ip='curl -sSL -H "Accept: application/json" https://ipinfo.io/json | jq -r .ip'
+alias ipecho="curl ipecho.net/plain; echo"
+
+for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
+  # shellcheck disable=SC2139
+  alias $method="lwp-request -m '$method'"
+done
+unset method
