@@ -24,4 +24,4 @@ pathmunge() {
   fi
 }
 
-pathmunge "$@"
+[ "${SHLVL:-0}" -eq 1 ] && pathmunge "$@"

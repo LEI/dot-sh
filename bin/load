@@ -1,0 +1,16 @@
+#!/bin/sh
+
+load() {
+  for p in "$@"; do
+    if [[ -d "$p" ]]; then
+      load "$p"/*
+    elif [[ -r "$p" ]] && [[ -f "$p" ]]; then # || [[ -L "$f" ]]
+      source "$p"
+      # else
+      #   >&2 printf "%s\n" "$p: No such file or directory"
+    fi
+  done
+  unset p
+}
+
+[ "${SHLVL:-0}" -eq 1 ] && load "$@"

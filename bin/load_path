@@ -27,4 +27,4 @@ load_path() {
   unset file
 }
 
-load_path "$@"
+[ "${SHLVL:-0}" -eq 1 ] && load_path "$@"
