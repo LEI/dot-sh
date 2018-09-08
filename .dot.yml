@@ -1,7 +1,14 @@
 ---
 role:
+  pkg:
+    # Install 'dig'
+    - name: dnsutils
+      os: ["debian"]
+    # Install 'lwp-request'
+    - name: libwww-perl
+      os: ["debian"]
   dir:
     - bin
   link:
-    - .* # curlrc, exports, hushlogin
+    - .* # aliases, curlrc, exports, hushlogin, inputrc
     - "bin/*:bin"

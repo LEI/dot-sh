@@ -33,14 +33,22 @@ alias path='echo $PATH | tr -s ":" "\n"'
 #alias .....="cd ../../../.."
 #alias -- -="cd -"
 
-# Remote commands
+# Reload the shell (i.e. invoke as a login shell)
+alias reload='exec $SHELL -l'
 
-# ipinfo.io: ip, hostname, city, region, country, loc, postal, org
-#alias ip='curl -sSL -H "Accept: application/json" https://ipinfo.io/json | jq -r .ip'
-alias ipecho="curl ipecho.net/plain; echo"
-
+# Requires libwww-perl
 for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
   # shellcheck disable=SC2139
   alias $method="lwp-request -m '$method'"
 done
 unset method
+
+# View HTTP traffic
+alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
+alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
+
+# Source local and OS aliases
+for f in ~/.aliases.*; do
+  # shellcheck disable=SC1090
+  . "$f"
+done

@@ -1,0 +1,74 @@
+#!/bin/sh
+
+# alias ipecho.net="curl -s https://ipecho.net/plain; echo"
+# alias canhazip.com="curl -s https://canhazip.com"
+
+# Use 'python -mjson.tool' to format json and grep value if jq is not installed?
+
+# curl -s https://ipinfo.io/<external-ip>
+# ipinfo.io: ip, hostname, city, region, country, loc, postal, org
+#alias ipinfo.io='curl -sSL -H "Accept: application/json" https://ipinfo.io/json | jq -r .ip'
+
+# Does not support HTTPS?
+# curl -s https://ifconfig.me/<external-ip>
+# iconfig.me: ..., port, remote_host, user_agent, ...
+#alias ifconfig.me="curl -s https://ifconfig.me/all.json | jq -r .ip_addr"
+
+net_ips() {
+  ifconfig -a |
+    grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' |
+    awk '{ sub(/inet6? (addr:)? ?/, ""); print }'
+}
+
+net_flush() {
+  # Flush Directory Service cache (macOS)
+  dscacheutil -flushcache && killall -HUP mDNSResponder
+}
+
+# Show active network interfaces
+net_ifactive() {
+  ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*status: active'
+}
+
+net_ip_local() {
+  ipconfig getifaddr en0
+}
+
+net_ip_public() {
+  dig +short myip.opendns.com @resolver1.opendns.com
+}
+
+usage() {
+  usage_str="usage: $0 [all|local|public]"
+  if [ $# -gt 0 ]; then
+    echo >&2 "$*"
+    die "$usage_str"
+  fi
+  echo "$usage_str"
+  exit 0
+}
+
+die() {
+  echo >&2 "$*"
+  exit 1
+}
+
+main() {
+  if [ $# -gt 1 ]; then
+    die "$*: too many arguments"
+  fi
+
+  ARG="${1:-public}"
+
+  case "$ARG" in
+    '' | all) net_ips ;;
+    f | flush) net_flush ;;
+    i | ifactive) net_ifactive ;;
+    l | local) net_ip_local ;;
+    p | public) net_ip_public ;;
+    -h | --help) usage ;;
+    *) usage "$ARG: unknown argument" ;;
+  esac
+}
+
+main "$@"
