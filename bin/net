@@ -21,8 +21,19 @@ net_ips() {
 }
 
 net_flush() {
-  # Flush Directory Service cache (macOS)
-  dscacheutil -flushcache && killall -HUP mDNSResponder
+  if [ "$(uname -s)" = "Darwin" ]; then
+    # Flush Directory Service cache (macOS)
+    dscacheutil -flushcache && killall -HUP mDNSResponder
+    return $?
+  fi
+  if hash nscd 2>/dev/null; then
+    # Name Service Caching Daemon
+    # Use -I to clear local DNS cache for all users
+    nscd -i hosts
+    return $?
+  fi
+  return 1
+  # Ubuntu: sudo service dns-clean restart
 }
 
 # Show active network interfaces
