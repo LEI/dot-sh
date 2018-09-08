@@ -2,7 +2,7 @@
 
 # Append or prepend to PATH
 
-main() {
+pathmunge() {
   if [ ! -d "$1" ]; then
     # Not a directory
     return 1
@@ -13,6 +13,7 @@ main() {
   case ":$PATH:" in
     *:"$1":*) return 2 ;;
   esac
+  # Bash: [[ $PATH =~ (^|:)$p($|:) ]]
   # Add the new directory to the beginning or to the end of PATH
   if [ "$2" = "before" ]; then
     # pathmunge /path/to/dir
@@ -23,4 +24,4 @@ main() {
   fi
 }
 
-main "$@"
+pathmunge "$@"

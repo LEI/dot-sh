@@ -48,7 +48,9 @@ alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
 alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
 
 # Source local and OS aliases
-for f in ~/.aliases.*; do
+for f in ~/.aliases."${OS:-$(uname -s)}" ~/.aliases.local; do
   # shellcheck disable=SC1090
-  . "$f"
+  if [ -f "$f" ]; then
+    . "$f"
+  fi
 done
