@@ -2,7 +2,12 @@
 
 # Append or prepend to PATH
 
-if [ "$(type -t pathmunge)" != "function" ]; then
+set -e
+
+# shellcheck disable=SC1090
+. "$HOME"/bin/hasfunc
+
+if ! hasfunc pathmunge; then
   pathmunge() {
     if [ ! -d "$1" ]; then
       # Not a directory

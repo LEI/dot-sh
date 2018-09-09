@@ -6,7 +6,12 @@
 # https://github.com/holman/dotfiles/blob/master/functions/extract
 # https://github.com/Bash-it/bash-it/blob/master/plugins/available/extract.plugin.bash
 
-if [ "$(type -t extract)" != "function" ]; then
+set -e
+
+# shellcheck disable=SC1090
+. "$HOME"/bin/hasfunc
+
+if ! hasfunc extract; then
   extract() {
     if [ -f "$1" ]; then
       case "$1" in

@@ -2,7 +2,12 @@
 
 # Reverse diff: compare 2 files and output common lines
 
-if [ "$(type -t rdiff)" != "function" ]; then
+set -e
+
+# shellcheck disable=SC1090
+. "$HOME"/bin/hasfunc
+
+if ! hasfunc rdiff; then
   rdiff() {
     if [[ $# -eq 0 ]]; then
       log "usage: ${0##*/} file1 file2"

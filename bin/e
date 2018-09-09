@@ -5,6 +5,8 @@
 # e: opens the current directory in your editor
 # e <path>: opens the specified directory in your editor
 
+set -e
+
 e="${VISUAL:-$EDITOR}"
 
 if [ -z "$e" ]; then

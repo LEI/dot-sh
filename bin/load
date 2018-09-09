@@ -1,6 +1,11 @@
 #!/bin/sh
 
-if [ "$(type -t load)" != "function" ]; then
+set -e
+
+# shellcheck disable=SC1090
+. "$HOME"/bin/hasfunc
+
+if ! hasfunc load; then
   load() {
     for p in "$@"; do
       if [ -d "$p" ]; then
@@ -15,10 +20,6 @@ if [ "$(type -t load)" != "function" ]; then
     unset p
   }
 fi
-
-# echo "\$BASH_SOURCE = ${BASH_SOURCE[0]}"
-# echo "\$0 = $0"
-# echo "\$SHLVL = $SHLVL" # [ "${SHLVL:-0}" -eq 1 ]
 
 # shellcheck disable=SC2128
 [ "$(basename -- "$0")" = load ] && load "$@"

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 # alias ipecho.net="curl -s https://ipecho.net/plain; echo"
 # alias canhazip.com="curl -s https://canhazip.com"
 
@@ -14,7 +16,10 @@
 # iconfig.me: ..., port, remote_host, user_agent, ...
 #alias ifconfig.me="curl -s https://ifconfig.me/all.json | jq -r .ip_addr"
 
-if [ "$(type -t net)" != "function" ]; then
+# shellcheck disable=SC1090
+. "$HOME"/bin/hasfunc
+
+if ! hasfunc net; then
   net() {
     if [ $# -gt 1 ]; then
       die "$*: too many arguments"
