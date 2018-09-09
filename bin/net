@@ -1,7 +1,5 @@
 #!/bin/sh
 
-set -e
-
 # alias ipecho.net="curl -s https://ipecho.net/plain; echo"
 # alias canhazip.com="curl -s https://canhazip.com"
 

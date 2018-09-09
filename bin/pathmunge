@@ -2,8 +2,6 @@
 
 # Append or prepend to PATH
 
-set -e
-
 # shellcheck disable=SC1090
 . "$HOME"/bin/hasfunc
 

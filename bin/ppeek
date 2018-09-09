@@ -6,8 +6,6 @@
 
 # github.com/rtomayko/dotfiles/blob/rtomayko/bin/ppeek
 
-set -e
-
 # shellcheck disable=SC1090
 . "$HOME"/bin/hasfunc
 

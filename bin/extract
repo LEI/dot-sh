@@ -6,8 +6,6 @@
 # https://github.com/holman/dotfiles/blob/master/functions/extract
 # https://github.com/Bash-it/bash-it/blob/master/plugins/available/extract.plugin.bash
 
-set -e
-
 # shellcheck disable=SC1090
 . "$HOME"/bin/hasfunc
 
