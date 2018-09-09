@@ -5,19 +5,29 @@
 # e: opens the current directory in your editor
 # e <path>: opens the specified directory in your editor
 
-set -e
+# set -e
 
-e="${VISUAL:-$EDITOR}"
+# shellcheck disable=SC1090
+. "$HOME"/bin/hasfunc
 
-if [ -z "$e" ]; then
-  printf >&2 '%s\n' "EDITOR is empty or not set"
-  exit 1
+if ! hasfunc e; then
+  e() {
+    editor="${VISUAL:-$EDITOR}"
+
+    if [ -z "$editor" ]; then
+      printf >&2 '%s\n' "EDITOR is empty or not set"
+      exit 1
+    fi
+
+    if [ $# -ne 0 ]; then
+      $editor "$@"
+    else
+      $editor .
+    fi
+
+    unset editor
+  }
 fi
 
-if [ $# -ne 0 ]; then
-  $e "$@"
-else
-  $e .
-fi
-
-unset e
+# shellcheck disable=SC2128
+[ "$(basename -- "$0")" = e ] && e "$@"

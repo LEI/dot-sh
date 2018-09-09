@@ -1,12 +1,12 @@
 #!/bin/sh
 
-
 # if [ -n "$ZSH" ]; then
 #   # shellcheck disable=SC2039
 #   typeset -f "$1" >/dev/null
 #   return $?
 # fi
 # [ "$(type -t hasfunc)" = "function" ]
+
 hasfunc() {
   # [ $(type "$1" 2>/dev/null | head -n1) = "$1 is a function" ]
   type "$1" 2>/dev/null | grep -m1 -q "^$1 is a function$"
