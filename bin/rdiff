@@ -36,4 +36,6 @@ fi
 
 # shellcheck disable=SC2128
 # [ "$(basename -- "$0")" = rdiff ]
-[[ "$0" == "$BASH_SOURCE" ]] && rdiff "$@"
+if [[ "$0" == "$BASH_SOURCE" ]]; then
+  rdiff "$@"
+fi

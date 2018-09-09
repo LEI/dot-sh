@@ -30,4 +30,6 @@ if ! hasfunc e; then
 fi
 
 # shellcheck disable=SC2128
-[ "$(basename -- "$0")" = e ] && e "$@"
+if [ "$(basename -- "$0")" = e ]; then
+  e "$@"
+fi

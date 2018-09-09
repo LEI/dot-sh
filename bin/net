@@ -88,4 +88,6 @@ if ! hasfunc net; then
 fi
 
 # shellcheck disable=SC2128
-[ "$(basename -- "$0")" = net ] && net "$@"
+if [ "$(basename -- "$0")" = net ]; then
+  net "$@"
+fi

@@ -23,4 +23,6 @@ if ! hasfunc ppeek; then
 fi
 
 # shellcheck disable=SC2128
-[ "$(basename -- "$0")" = ppeek ] && ppeek "$@"
+if [ "$(basename -- "$0")" = ppeek ]; then
+  ppeek "$@"
+fi

@@ -30,4 +30,6 @@ if ! hasfunc pathmunge; then
 fi
 
 # shellcheck disable=SC2128
-[ "$(basename -- "$0")" = pathmunge ] && pathmunge "$@"
+if [ "$(basename -- "$0")" = pathmunge ]; then
+  pathmunge "$@"
+fi

@@ -37,4 +37,6 @@ if ! hasfunc extract; then
 fi
 
 # shellcheck disable=SC2128
-[ "$(basename -- "$0")" = extract ] && extract "$@"
+if [ "$(basename -- "$0")" = extract ]; then
+  extract "$@"
+fi

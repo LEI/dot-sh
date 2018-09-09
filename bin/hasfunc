@@ -13,4 +13,6 @@ hasfunc() {
 }
 
 # shellcheck disable=SC2128
-[ "$(basename -- "$0")" = hasfunc ] && hasfunc "$@"
+if [ "$(basename -- "$0")" = hasfunc ]; then
+  hasfunc "$@"
+fi
