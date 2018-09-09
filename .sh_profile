@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# FIXME
+if [ -d ~/bin ]; then
+  PATH="$PATH:$HOME/bin"
+fi
+
 # Global environment variables
 if [ -f ~/.exports ]; then
   # shellcheck disable=SC1090
