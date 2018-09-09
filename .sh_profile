@@ -5,6 +5,9 @@ if [ -d ~/bin ]; then
   PATH="$PATH:$HOME/bin"
 fi
 
+# Default: \h:\W \u\$
+PS1='\w \s-\v\$ '
+
 # Global environment variables
 if [ -f ~/.exports ]; then
   # shellcheck disable=SC1090
