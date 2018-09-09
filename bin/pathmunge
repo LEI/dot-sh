@@ -27,4 +27,4 @@ if [ "$(type -t pathmunge)" != "function" ]; then
 fi
 
 # shellcheck disable=SC2128
-[ "$0" = "$BASH_SOURCE" ] && pathmunge "$@"
+[ "$(basename -- "$0")" = pathmunge ] && pathmunge "$@"

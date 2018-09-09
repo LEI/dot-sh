@@ -34,4 +34,4 @@ if [ "$(type -t extract)" != "function" ]; then
 fi
 
 # shellcheck disable=SC2128
-[ "$0" = "$BASH_SOURCE" ] && extract "$@"
+[ "$(basename -- "$0")" = extract ] && extract "$@"

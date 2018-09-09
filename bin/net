@@ -85,4 +85,4 @@ if [ "$(type -t net)" != "function" ]; then
 fi
 
 # shellcheck disable=SC2128
-[ "$0" = "$BASH_SOURCE" ] && net "$@"
+[ "$(basename -- "$0")" = net ] && net "$@"

@@ -21,4 +21,4 @@ fi
 # echo "\$SHLVL = $SHLVL" # [ "${SHLVL:-0}" -eq 1 ]
 
 # shellcheck disable=SC2128
-[ "$0" = "$BASH_SOURCE" ] && load "$@"
+[ "$(basename -- "$0")" = load ] && load "$@"

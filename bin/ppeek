@@ -22,4 +22,4 @@ if [ "$(type -t ppeek)" != "function" ]; then
 fi
 
 # shellcheck disable=SC2128
-[ "$0" = "$BASH_SOURCE" ] && ppeek "$@"
+[ "$(basename -- "$0")" = ppeek ] && ppeek "$@"

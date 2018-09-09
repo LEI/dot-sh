@@ -33,4 +33,4 @@ fi
 # In POSIX sh, BASH_SOURCE is undefined
 # but this still works on macOS (sh linked to bash?)
 # shellcheck disable=SC2128
-[ "$0" = "$BASH_SOURCE" ] && load_path "$@"
+[ "$(basename -- "$0")" = load_path ] && load_path "$@"
