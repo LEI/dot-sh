@@ -24,7 +24,8 @@ role:
       # Append to PATH
       # PATH="$PATH:$HOME/bin"
       if [ -f ~/.path ]; then
-        . "$HOME"/bin/load_path ~/.path
+        source "$HOME"/bin/load_path
+        load_path ~/.path
       fi
 
       #shopt -s expand_aliases

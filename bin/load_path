@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# shellcheck disable=SC1090
+. "$HOME"/bin/pathmunge
+
 if [ "$(type -t load_path)" != "function" ]; then
   load_path() {
     file="$1"
@@ -20,8 +23,7 @@ if [ "$(type -t load_path)" != "function" ]; then
         \~/*) p="$HOME/${p#\~/}" ;;
       esac
       if [ -d "$p" ]; then
-        # shellcheck disable=SC1090
-        . "$HOME/bin/pathmunge" "$p" after
+        pathmunge "$p" after
       else # TODO: indicate line number
         echo >&2 "$p: invalid directory found in $file"
       fi
