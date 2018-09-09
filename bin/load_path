@@ -1,30 +1,36 @@
 #!/bin/sh
 
-load_path() {
-  file="$1"
+if [ "$(type -t load_path)" != "function" ]; then
+  load_path() {
+    file="$1"
 
-  if [ ! -f "$file" ]; then
-    return 1
-  fi
-
-  while read -r p; do
-    case "$p" in
-      # Skip empty lines
-      "") continue ;;
-      # Ignore comments
-      \#*) continue ;;
-      # Strip end of line comments
-      *\ \#*) p="${p% #*}" ;;
-      # Simulate home expansion
-      \~/*) p="$HOME/${p#\~/}" ;;
-    esac
-    if [ -d "$p" ]; then
-      source "$HOME/bin/pathmunge" "$p" after
-    else # TODO: indicate line number
-      echo >&2 "$p: invalid directory found in $file"
+    if [ ! -f "$file" ]; then
+      return 1
     fi
-  done <"$file"
-  unset file
-}
 
-[ "${SHLVL:-0}" -eq 1 ] && load_path "$@"
+    while read -r p; do
+      case "$p" in
+        # Skip empty lines
+        "") continue ;;
+        # Ignore comments
+        \#*) continue ;;
+        # Strip end of line comments
+        *\ \#*) p="${p% #*}" ;;
+        # Simulate home expansion
+        \~/*) p="$HOME/${p#\~/}" ;;
+      esac
+      if [ -d "$p" ]; then
+        # shellcheck disable=SC1090
+        . "$HOME/bin/pathmunge" "$p" after
+      else # TODO: indicate line number
+        echo >&2 "$p: invalid directory found in $file"
+      fi
+    done <"$file"
+    unset file
+  }
+fi
+
+# In POSIX sh, BASH_SOURCE is undefined
+# but this still works on macOS (sh linked to bash?)
+# shellcheck disable=SC2128
+[ "$0" = "$BASH_SOURCE" ] && load_path "$@"

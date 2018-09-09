@@ -6,7 +6,7 @@
 # https://github.com/holman/dotfiles/blob/master/functions/extract
 # https://github.com/Bash-it/bash-it/blob/master/plugins/available/extract.plugin.bash
 
-if ! hash extract 2>/dev/null; then
+if [ "$(type -t extract)" != "function" ]; then
   extract() {
     if [ -f "$1" ]; then
       case "$1" in
@@ -33,4 +33,5 @@ if ! hash extract 2>/dev/null; then
   }
 fi
 
-extract "$@"
+# shellcheck disable=SC2128
+[ "$0" = "$BASH_SOURCE" ] && extract "$@"

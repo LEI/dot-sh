@@ -2,31 +2,34 @@
 
 # Reverse diff: compare 2 files and output common lines
 
-log() {
-  printf "%s\n" "$@"
-}
+if [ "$(type -t rdiff)" != "function" ]; then
+  rdiff() {
+    if [[ $# -eq 0 ]]; then
+      log "usage: ${0##*/} file1 file2"
+    elif [[ $# -ne 2 ]] || [[ -z "$1" ]] || [[ -z "$2" ]]; then
+      error "invalid arguments"
+      # elif ! exists "$1" then;
+      #   error "$1: no such file"
+      # elif ! exists "$2" then;
+      #   error "$2: no such file"
+    else
+      comm -1 -2 <(sort "$1") <(sort "$2")
+    fi # grep -F -x -f ?
+  }
 
-error() {
-  log >&2 "${0##*/}: $*"
-  return 1
-}
+  log() {
+    printf "%s\n" "$@"
+  }
 
-exists() {
-  [[ -f "$1" ]] && [[ -L "$1" ]]
-}
+  error() {
+    log >&2 "${0##*/}: $*"
+    return 1
+  }
 
-main() {
-  if [[ $# -eq 0 ]]; then
-    log "usage: ${0##*/} file1 file2"
-  elif [[ $# -ne 2 ]] || [[ -z "$1" ]] || [[ -z "$2" ]]; then
-    error "invalid arguments"
-    # elif ! exists "$1" then;
-    #   error "$1: no such file"
-    # elif ! exists "$2" then;
-    #   error "$2: no such file"
-  else
-    comm -1 -2 <(sort "$1") <(sort "$2")
-  fi # grep -F -x -f ?
-}
+  # exists() {
+  #   [[ -f "$1" ]] && [[ -L "$1" ]]
+  # }
+fi
 
-[[ "$0" == "$BASH_SOURCE" ]] && main "$@"
+# shellcheck disable=SC2128
+[[ "$0" == "$BASH_SOURCE" ]] && rdiff "$@"

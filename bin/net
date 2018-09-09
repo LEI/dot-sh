@@ -14,72 +14,75 @@
 # iconfig.me: ..., port, remote_host, user_agent, ...
 #alias ifconfig.me="curl -s https://ifconfig.me/all.json | jq -r .ip_addr"
 
-net_ips() {
-  ifconfig -a |
-    grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' |
-    awk '{ sub(/inet6? (addr:)? ?/, ""); print }'
-}
+if [ "$(type -t net)" != "function" ]; then
+  net() {
+    if [ $# -gt 1 ]; then
+      die "$*: too many arguments"
+    fi
 
-net_flush() {
-  if [ "$(uname -s)" = "Darwin" ]; then
-    # Flush Directory Service cache (macOS)
-    dscacheutil -flushcache && killall -HUP mDNSResponder
-    return $?
-  fi
-  if hash nscd 2>/dev/null; then
-    # Name Service Caching Daemon
-    # Use -I to clear local DNS cache for all users
-    nscd -i hosts
-    return $?
-  fi
-  return 1
-  # Ubuntu: sudo service dns-clean restart
-}
+    ARG="${1:-public}"
 
-# Show active network interfaces
-net_ifactive() {
-  ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*status: active'
-}
+    case "$ARG" in
+      '' | all) net_ips ;;
+      f | flush) net_flush ;;
+      i | ifactive) net_ifactive ;;
+      l | local) net_ip_local ;;
+      p | public) net_ip_public ;;
+      -h | --help) usage ;;
+      *) usage "$ARG: unknown argument" ;;
+    esac
+  }
 
-net_ip_local() {
-  ipconfig getifaddr en0
-}
+  net_ips() {
+    ifconfig -a |
+      grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' |
+      awk '{ sub(/inet6? (addr:)? ?/, ""); print }'
+  }
 
-net_ip_public() {
-  dig +short myip.opendns.com @resolver1.opendns.com
-}
+  net_flush() {
+    if [ "$(uname -s)" = "Darwin" ]; then
+      # Flush Directory Service cache (macOS)
+      dscacheutil -flushcache && killall -HUP mDNSResponder
+      return $?
+    fi
+    if hash nscd 2>/dev/null; then
+      # Name Service Caching Daemon
+      # Use -I to clear local DNS cache for all users
+      nscd -i hosts
+      return $?
+    fi
+    return 1
+    # Ubuntu: sudo service dns-clean restart
+  }
 
-usage() {
-  usage_str="usage: $0 [all|local|public]"
-  if [ $# -gt 0 ]; then
+  # Show active network interfaces
+  net_ifactive() {
+    ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*status: active'
+  }
+
+  net_ip_local() {
+    ipconfig getifaddr en0
+  }
+
+  net_ip_public() {
+    dig +short myip.opendns.com @resolver1.opendns.com
+  }
+
+  usage() {
+    usage_str="usage: $0 [all|local|public]"
+    if [ $# -gt 0 ]; then
+      echo >&2 "$*"
+      die "$usage_str"
+    fi
+    echo "$usage_str"
+    exit 0
+  }
+
+  die() {
     echo >&2 "$*"
-    die "$usage_str"
-  fi
-  echo "$usage_str"
-  exit 0
-}
+    exit 1
+  }
+fi
 
-die() {
-  echo >&2 "$*"
-  exit 1
-}
-
-main() {
-  if [ $# -gt 1 ]; then
-    die "$*: too many arguments"
-  fi
-
-  ARG="${1:-public}"
-
-  case "$ARG" in
-    '' | all) net_ips ;;
-    f | flush) net_flush ;;
-    i | ifactive) net_ifactive ;;
-    l | local) net_ip_local ;;
-    p | public) net_ip_public ;;
-    -h | --help) usage ;;
-    *) usage "$ARG: unknown argument" ;;
-  esac
-}
-
-main "$@"
+# shellcheck disable=SC2128
+[ "$0" = "$BASH_SOURCE" ] && net "$@"

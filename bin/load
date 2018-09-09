@@ -1,16 +1,24 @@
 #!/bin/sh
 
-load() {
-  for p in "$@"; do
-    if [[ -d "$p" ]]; then
-      load "$p"/*
-    elif [[ -r "$p" ]] && [[ -f "$p" ]]; then # || [[ -L "$f" ]]
-      source "$p"
-      # else
-      #   >&2 printf "%s\n" "$p: No such file or directory"
-    fi
-  done
-  unset p
-}
+if [ "$(type -t load)" != "function" ]; then
+  load() {
+    for p in "$@"; do
+      if [ -d "$p" ]; then
+        load "$p"/*
+      elif [ -r "$p" ] && [ -f "$p" ]; then # || [ -L "$f" ]
+        # shellcheck disable=SC1090
+        . "$p"
+        # else
+        #   >&2 printf "%s\n" "$p: No such file or directory"
+      fi
+    done
+    unset p
+  }
+fi
 
-[ "${SHLVL:-0}" -eq 1 ] && load "$@"
+# echo "\$BASH_SOURCE = ${BASH_SOURCE[0]}"
+# echo "\$0 = $0"
+# echo "\$SHLVL = $SHLVL" # [ "${SHLVL:-0}" -eq 1 ]
+
+# shellcheck disable=SC2128
+[ "$0" = "$BASH_SOURCE" ] && load "$@"

@@ -17,3 +17,5 @@ if [ $# -ne 0 ]; then
 else
   $e .
 fi
+
+unset e
