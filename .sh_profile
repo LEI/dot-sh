@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Global environment variables
+if [ -f ~/.exports ]; then
+  # shellcheck disable=SC1090
+  . ~/.exports
+fi
+
+# Append to PATH
+# PATH="$PATH:$HOME/bin"
+if [ -f ~/.path ]; then
+  # shellcheck disable=SC1090
+  . "$HOME"/bin/load_path
+  load_path ~/.path
+fi
+
+#shopt -s expand_aliases
+if [ -f ~/.aliases ]; then
+  # shellcheck disable=SC1090
+  . ~/.aliases
+fi

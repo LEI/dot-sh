@@ -14,21 +14,4 @@ role:
     - "bin/*:bin"
   line:
     ".path": "~/bin"
-  block:
-    ".profile": |
-      # Global environment variables
-      if [ -f ~/.exports ]; then
-        . ~/.exports
-      fi
-
-      # Append to PATH
-      # PATH="$PATH:$HOME/bin"
-      if [ -f ~/.path ]; then
-        source "$HOME"/bin/load_path
-        load_path ~/.path
-      fi
-
-      #shopt -s expand_aliases
-      if [ -f ~/.aliases ]; then
-        . ~/.aliases
-      fi
+    ".profile": ". ~/.sh_profile"
