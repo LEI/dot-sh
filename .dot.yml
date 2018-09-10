@@ -7,6 +7,9 @@ role:
     # Install 'lwp-request'
     - name: libwww-perl
       os: ["debian"]
+
+    - name: shunit2
+      os: ["darwin"]
   dir:
     - bin
   link:
