@@ -14,26 +14,49 @@
 # iconfig.me: ..., port, remote_host, user_agent, ...
 #alias ifconfig.me="curl -s https://ifconfig.me/all.json | jq -r .ip_addr"
 
+# Script source name
+NET_BIN="$(basename -- "$0")"
+
+# Default script argument
+NET_DEFAULT_ARG="public"
+
+NET_USAGE_STR="usage: ${NET_BIN:-net} [all | flush | ifactive | local | public]" #  [-v]
+
 # shellcheck disable=SC1090
 . "$HOME"/bin/hasfunc
 
 if ! hasfunc net; then
   net() {
-    if [ $# -gt 1 ]; then
-      die "$*: too many arguments"
+    # [ $# -gt 1 ] && die "$*: too many arguments"
+    if [ $# -eq 0 ]; then
+      set -- "$NET_DEFAULT_ARG"
     fi
-
-    ARG="${1:-public}"
-
-    case "$ARG" in
-      '' | all) net_ips ;;
-      f | flush) net_flush ;;
-      i | ifactive) net_ifactive ;;
-      l | local) net_ip_local ;;
-      p | public) net_ip_public ;;
-      -h | --help) usage ;;
-      *) usage "$ARG: unknown argument" ;;
-    esac
+    func=
+    # verbosity=0
+    for arg in "$@"; do
+      if [ -n "$func" ]; then
+        die "$arg: too many functions, already registered '$func'"
+      fi
+      case "$arg" in
+        '' | all) func=net_ips ;;
+        f | flush) func=net_flush ;;
+        i | ifactive) func=net_ifactive ;;
+        l | local) func=net_ip_local ;;
+        p | public) func=net_ip_public ;;
+        -h | --help) usage ;;
+        # -v | --verbose) verbosity=$((verbosity + 1)) ;;
+        *) usage "$arg: unknown argument" ;;
+      esac
+    done
+    # if [ "$verbosity" -ne 0 ]; then
+    #   NET_VERBOSE=1
+    # fi
+    if ! hasfunc "$func"; then
+      die "$func: undefined function"
+    fi
+    if [ -n "$func" ]; then
+      "$func"
+    fi
   }
 
   net_ips() {
@@ -72,12 +95,11 @@ if ! hasfunc net; then
   }
 
   usage() {
-    usage_str="usage: $0 [all|local|public]"
-    if [ $# -gt 0 ]; then
+    if [ $# -ne 0 ]; then
       echo >&2 "$*"
-      die "$usage_str"
+      die "$NET_USAGE_STR"
     fi
-    echo "$usage_str"
+    echo "$NET_USAGE_STR"
     exit 0
   }
 
@@ -88,6 +110,6 @@ if ! hasfunc net; then
 fi
 
 # shellcheck disable=SC2128
-if [ "$(basename -- "$0")" = net ]; then
+if [ "$NET_BIN" = net ]; then
   net "$@"
 fi
