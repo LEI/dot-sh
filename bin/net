@@ -20,7 +20,7 @@ NET_BIN="$(basename -- "$0")"
 # Default script argument
 NET_DEFAULT_ARG="public"
 
-NET_USAGE_STR="usage: ${NET_BIN:-net} [all | flush | ifactive | local | public]" #  [-v]
+NET_USAGE_STR="usage: ${NET_BIN:-net} [all | geo | flush | ifactive | local | public]"
 
 # shellcheck disable=SC1090
 . "$HOME"/bin/hasfunc
@@ -40,6 +40,7 @@ if ! hasfunc net; then
       case "$arg" in
         '' | all) func=net_ips ;;
         f | flush) func=net_flush ;;
+        # g | geo) func=net_geoip ;;
         i | ifactive) func=net_ifactive ;;
         l | local) func=net_ip_local ;;
         p | public) func=net_ip_public ;;
@@ -60,10 +61,15 @@ if ! hasfunc net; then
   }
 
   net_ips() {
+    # List all local IPs
     ifconfig -a |
       grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' |
       awk '{ sub(/inet6? (addr:)? ?/, ""); print }'
   }
+
+  # net_geoip() {
+  #   geoiplookup "$@"
+  # }
 
   net_flush() {
     if [ "$(uname -s)" = "Darwin" ]; then
@@ -77,7 +83,7 @@ if ! hasfunc net; then
       nscd -i hosts
       return $?
     fi
-    return 1
+    return 2
     # Ubuntu: sudo service dns-clean restart
   }
 
