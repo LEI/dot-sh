@@ -46,7 +46,7 @@ if ! hasfunc net; then
         p | public) func=net_ip_public ;;
         -h | --help) usage ;;
         # -v | --verbose) verbosity=$((verbosity + 1)) ;;
-        *) usage "$arg: unknown argument" ;;
+        *) usage "$arg: illegal argument" ;;
       esac
     done
     # if [ "$verbosity" -ne 0 ]; then

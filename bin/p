@@ -1,0 +1,87 @@
+#!/bin/sh
+
+# p, prep, proj
+
+# TODO: export & split on ':'
+PROJ_PATH="$HOME/src"
+
+# Script source name
+PROJ_BIN="$(basename -- "$0")"
+
+# Default script argument
+PROJ_DEFAULT_ARG="list"
+
+PROJ_USAGE_STR="usage: ${PROJ_BIN:-net} [all | geo | flush | ifactive | local | public]"
+
+project_list() {
+  project_find -type d -mindepth 2 -maxdepth 2 "$@"
+  # (cd "$PROJ_PATH" && find . -type d -mindepth 2 "$@" | cut -c3-)
+}
+
+project_find() {
+  # (cd "$PROJ_PATH" && find . "$@" | cut -c3-)
+  (cd "$PROJ_PATH" && find * "$@")
+}
+
+project_add() {
+  git clone "$@"
+}
+
+main() {
+  if [ $# -eq 0 ]; then
+    set -- "$PROJ_DEFAULT_ARG"
+  fi
+  func=
+  for arg in "$@"; do
+    case "$arg" in
+      '' | --)
+        shift
+        break 2
+        ;;
+      list)
+        shift
+        func=project_list
+        break
+        ;;
+      find)
+        shift
+        func=project_find
+        break
+        ;;
+      a | add)
+        shift
+        func=project_add
+        break
+        ;;
+      -h | --help) usage ;;
+      *) usage "$arg: illegal argument" ;;
+    esac
+  done
+  # if [ "$1" = -- ]; then
+  #   shift
+  # elif [ $# -ne 0 ]; then
+  #   die "$*: too many arguments"
+  # fi
+  if ! hash "$func" 2>/dev/null; then
+    die "$func: undefined function"
+  fi
+  if [ -n "$func" ]; then
+    "$func" "$@"
+  fi
+}
+
+usage() {
+  if [ $# -ne 0 ]; then
+    echo >&2 "$*"
+    die "$PROJ_USAGE_STR"
+  fi
+  echo "$PROJ_USAGE_STR"
+  exit 0
+}
+
+die() {
+  echo >&2 "$*"
+  exit 1
+}
+
+main "$@"
